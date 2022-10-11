@@ -49,16 +49,17 @@
         )
       }
 
-      const form = (
-        <form>
-          <input
-            type="text"
-            name="name"
-            placeholder="영어 대사를 입력해주세요"
-          />
-          <button type="submit">생성</button>
-        </form>
-      );
+      // Form 컴포넌트
+      const Form = () => (
+          <form>
+            <input
+              type="text"
+              name="name"
+              placeholder="영어 대사를 입력해주세요"
+            />
+            <button type="submit">생성</button>
+          </form>
+        );
 
       // CatItem 컴포넌트
       // 컴포넌트 이름은 대문자로 시작
@@ -81,11 +82,12 @@
       }
 
       // MainCard 컴포넌트
-      const MainCard = () => {
+      // ES6+ 디스트럭처링 문법 적용
+      const MainCard = ({img}) => {
         return (
           <div class="main-card">
             <img
-              src="./images/cat3.png"
+              src={img}
               alt="고양이"
               width="400"
             />
@@ -98,8 +100,8 @@
         <div>
           <Title>1번째 고양이가 말한댱</Title>
           <Title>2번째 고양이가 말한댱</Title>
-          {form}
-          <MainCard />
+          <Form />
+          <MainCard img="./images/cat3.png"/>
           <Favorites />
         </div>
       );
