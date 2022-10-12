@@ -22,9 +22,11 @@
       flex-wrap: wrap;
       gap: 15px;
     }
+    /*
     .favorites img {
       width: 150px;
     }
+    */
   </style>
   <body>
     <div id="app"></div>
@@ -63,10 +65,11 @@
 
       // CatItem 컴포넌트
       // 컴포넌트 이름은 대문자로 시작
+      // <img style={{ width: "150px", border: "1px solid blue" }} : 인라인 스타일링
       function CatItem(props) {
         return (
           <li>
-            <img src={props.img} />
+            <img src={props.img} style={{ width: "150px", border: "1px solid blue" }} />
           </li>
         );
       }
@@ -74,7 +77,7 @@
       // Favorites 컴포넌트
       function Favorites() {
         return (
-          <ul class="favorites">
+          <ul className="favorites">
             <CatItem img="./images/cat1.jpg"/>
             <CatItem img="./images/cat2.png"/>
           </ul>
@@ -85,7 +88,7 @@
       // ES6+ 디스트럭처링 문법 적용
       const MainCard = ({img}) => {
         return (
-          <div class="main-card">
+          <div className="main-card">
             <img
               src={img}
               alt="고양이"
