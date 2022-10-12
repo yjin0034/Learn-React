@@ -49,13 +49,27 @@
       // Form 컴포넌트
       // 폼 전송 이벤트 : onSubmit     
       const Form = () => {
+        // useState() : 컴포넌트의 상태 관리를 위해 React Hooks에서 제공되는 함수
+        // useState의 첫 번째 인자(counter)는 카운터 그 자체이고,
+        // 두 번째 인자(setCounter)는 카운터를 조작하는 함수이다.
+        // setCounter를 통해 카운터 값을 변경할 수 있다.
+        // useState(1) : 첫 번째 인자에 1을 줌. 즉, 첫 번째 인자의 초기 값으로 1을 줌.
+        const [counter, setCounter] = React.useState(1);
+
+        // 현재 카운터 콘솔 출력
+        console.log("카운터", counter)
+
         // event.preventDefault()
         // HTML의 기본 동작 : 폼에 전송을 하면, 브라우저가 리프레쉬 된다.
         // 이를 막기 위해, 폼의 첫 번째 인자로 들어오는 event에 .preventDefault()를
         // 적용하면 이벤트의 기본 동작을 막을 수 있다. 즉, 폼 전송 후 브라우저가 리프레쉬 되는 걸 막을 수 있다.
         function handleFormSubmit(event) {
           event.preventDefault();
-          console.log("폼 전송됨")
+          console.log("폼 전송됨");
+          // 카운터 값에 +1을 하기
+          // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
+          // setCounter 함수를 통해 카운터를 조작함
+          setCounter(counter + 1);
         }
         return (
           <form onSubmit={handleFormSubmit}>
