@@ -40,6 +40,7 @@
       console.log("야옹");
 
       // Title 컴포넌트
+      // App 컴포넌트로부터 props를 받아온다.
       const Title = (props) => {
         return (
           <h1>{props.children}</h1>
@@ -66,6 +67,7 @@
       // CatItem 컴포넌트
       // 컴포넌트 이름은 대문자로 시작
       // <img style={{ width: "150px", border: "1px solid blue" }} : 인라인 스타일링
+      // App 컴포넌트로부터 props를 받아온다.
       function CatItem(props) {
         return (
           <li>
@@ -76,10 +78,26 @@
 
       // Favorites 컴포넌트
       function Favorites() {
+
+        // 고양이 이미지 사진을 각 변수에 담음
+        const CAT1 = "./images/cat1.jpg";
+        const CAT2 = "./images/cat2.png";
+        const CAT3 = "./images/cat3.png";
+
+        // 고양이 이미지들을 담을 cats 리스트 생성
+        const cats = [CAT1, CAT2, CAT3];
+
+        // {cats.map(...)} : JS 코드를 사용하기 위해 {}(중괄호)를 사용함.
+        // cats 리스트의 인자들을 map 함수로 순회하며 나열할 것이다.
+        // (cat은 첫 번째 인자로 설정한 값이다.)
+        // 각 인자들은 순회하며 하나씩 CatItem 컴포넌트에 props로 전달된다.
+        // key : 리스트의 인자에 고유한 id 값을 설정해주는 것.
+        // 이 key 값을 설정해줘야 리액트에서 이 리스트를 최적화하여 보여줄 수 있음.
         return (
           <ul className="favorites">
-            <CatItem img="./images/cat2.png"/>
-            <CatItem img="./images/cat3.png"/>
+            {cats.map((cat) => (
+              <CatItem img={cat} key={cat}/>
+            ))}
           </ul>
         );
       }
