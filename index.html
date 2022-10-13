@@ -47,30 +47,10 @@
       }
 
       // Form 컴포넌트
-      // 폼 전송 이벤트 : onSubmit     
-      const Form = () => {
-        // useState() : 컴포넌트의 상태 관리를 위해 React Hooks에서 제공되는 함수
-        // useState의 첫 번째 인자(counter)는 카운터 그 자체이고,
-        // 두 번째 인자(setCounter)는 카운터를 조작하는 함수이다.
-        // setCounter를 통해 카운터 값을 변경할 수 있다.
-        // useState(1) : 첫 번째 인자에 1을 줌. 즉, 첫 번째 인자의 초기 값으로 1을 줌.
-        const [counter, setCounter] = React.useState(1);
-
-        // 현재 카운터 콘솔 출력
-        console.log("카운터", counter)
-
-        // event.preventDefault()
-        // HTML의 기본 동작 : 폼에 전송을 하면, 브라우저가 리프레쉬 된다.
-        // 이를 막기 위해, 폼의 첫 번째 인자로 들어오는 event에 .preventDefault()를
-        // 적용하면 이벤트의 기본 동작을 막을 수 있다. 즉, 폼 전송 후 브라우저가 리프레쉬 되는 걸 막을 수 있다.
-        function handleFormSubmit(event) {
-          event.preventDefault();
-          console.log("폼 전송됨");
-          // 카운터 값에 +1을 하기
-          // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
-          // setCounter 함수를 통해 카운터를 조작함
-          setCounter(counter + 1);
-        }
+      // 폼 전송 이벤트 : onSubmit
+      // (App 컴포넌트의) handleFormSubmit 함수를 props로 받아온다  
+      const Form = ({handleFormSubmit}) => {
+        
         return (
           <form onSubmit={handleFormSubmit}>
             <input
@@ -127,19 +107,45 @@
         );
       }
 
-      const app = (
-        <div>
-          <Title>1번째 고양이가 말한댱</Title>
-          <Title>2번째 고양이가 말한댱</Title>
-          <Form />
-          <MainCard img="./images/cat3.png"/>
-          <Favorites />
-        </div>
-      );
+      // App 컴포넌트
+      const App = () => {
+        // useState() : 컴포넌트의 상태 관리를 위해 React Hooks에서 제공되는 함수
+        // useState의 첫 번째 인자(counter)는 카운터 그 자체이고,
+        // 두 번째 인자(setCounter)는 카운터를 조작하는 함수이다.
+        // setCounter를 통해 카운터 값을 변경할 수 있다.
+        // useState(1) : 첫 번째 인자에 1을 줌. 즉, 첫 번째 인자의 초기 값으로 1을 줌.
+        const [counter, setCounter] = React.useState(1);
+
+        // 현재 카운터 콘솔 출력
+        console.log("카운터", counter)
+
+        // event.preventDefault()
+        // HTML의 기본 동작 : 폼에 전송을 하면, 브라우저가 리프레쉬 된다.
+        // 이를 막기 위해, 폼의 첫 번째 인자로 들어오는 event에 .preventDefault()를
+        // 적용하면 이벤트의 기본 동작을 막을 수 있다. 즉, 폼 전송 후 브라우저가 리프레쉬 되는 걸 막을 수 있다.
+        function handleFormSubmit(event) {
+          event.preventDefault();
+          console.log("폼 전송됨");
+          // 카운터 값에 +1을 하기
+          // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
+          // setCounter 함수를 통해 카운터를 조작함
+          setCounter(counter + 1);
+        }
+        // <Form handleFormSubmit={handleFormSubmit}/> : Form 컴포넌트에 handleFormSubmit 함수를 props로 넘겨준다.
+        return (
+          <div>
+            <Title>{counter}번째 고양이가 말한댱</Title>
+            <Title>2번째 고양이가 말한댱</Title>
+            <Form handleFormSubmit={handleFormSubmit}/>
+            <MainCard img="./images/cat3.png"/>
+            <Favorites />
+          </div>
+        );
+      }
 
       const 여기다가그려 = document.querySelector("#app");
 
-      ReactDOM.render(app, 여기다가그려);
+      ReactDOM.render(<App />, 여기다가그려);
     </script>
   </body>
 </html>
