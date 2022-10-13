@@ -78,14 +78,15 @@
       function Favorites() {
         return (
           <ul className="favorites">
-            <CatItem img="./images/cat1.jpg"/>
             <CatItem img="./images/cat2.png"/>
+            <CatItem img="./images/cat3.png"/>
           </ul>
         );
       }
 
       // MainCard 컴포넌트
       // ES6+ 디스트럭처링 문법 적용
+      // (App 컴포넌트의) mainCard 값을 props로 받아온다.
       // 마우스 이벤트 : onClick, onMouseOver
       // React에서는 onClick과 같이 c를 대문자로 써주어야 한다.
       const MainCard = ({img}) => {
@@ -109,12 +110,23 @@
 
       // App 컴포넌트
       const App = () => {
+
+        // 고양이 이미지 사진을 각 변수에 담음
+        const CAT1 = "./images/cat1.jpg"
+        const CAT2 = "./images/cat2.png"
+        const CAT3 = "./images/cat3.png"
+
         // useState() : 컴포넌트의 상태 관리를 위해 React Hooks에서 제공되는 함수
-        // useState의 첫 번째 인자(counter)는 카운터 그 자체이고,
+        // useState의 첫 번째 인자(counter)는 설정된 카운터 변수 그 자체이고,
         // 두 번째 인자(setCounter)는 카운터를 조작하는 함수이다.
         // setCounter를 통해 카운터 값을 변경할 수 있다.
         // useState(1) : 첫 번째 인자에 1을 줌. 즉, 첫 번째 인자의 초기 값으로 1을 줌.
         const [counter, setCounter] = React.useState(1);
+
+        // 첫 번째 인자 mainCat는 설정된 변수 그 자체이고,
+        // 두 번째 인자 setMainCat은 CAT1 변수를 조작하는 함수이다.
+        // useState(CAT1) : 첫 번째 인자로 CAT1을 줌. 즉, 첫 번째 인자의 초기 값으로 CAT1을 설정.
+        const [mainCat, setMainCat] = React.useState(CAT1)
 
         // 현재 카운터 콘솔 출력
         console.log("카운터", counter)
@@ -130,14 +142,20 @@
           // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
           // setCounter 함수를 통해 카운터를 조작함
           setCounter(counter + 1);
+          // mainCat의 값을 CAT2로 변경하기
+          // 폼을 생성하면, CAT2 값으로 변경된다. 
+          // (즉 결국, 해당 값은 MainCard 컴포넌트에 전달되어, CAT2 변수에 저장된 고양이 이미지로 이미지가 변경된다.)
+          setMainCat(CAT2)
         }
+
         // <Form handleFormSubmit={handleFormSubmit}/> : Form 컴포넌트에 handleFormSubmit 함수를 props로 넘겨준다.
+        // <MainCard img={mainCat}/> : MainCard 컴포넌트에 mainCat 값을 이미지로 전달
         return (
           <div>
             <Title>{counter}번째 고양이가 말한댱</Title>
             <Title>2번째 고양이가 말한댱</Title>
             <Form handleFormSubmit={handleFormSubmit}/>
-            <MainCard img="./images/cat3.png"/>
+            <MainCard img={mainCat}/>
             <Favorites />
           </div>
         );
