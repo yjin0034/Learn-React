@@ -77,25 +77,18 @@
       }
 
       // Favorites 컴포넌트
-      function Favorites() {
+      // App 컴포넌트의 favorites 값을 props로 받아온다.
+      function Favorites({favorites}) {
 
-        // 고양이 이미지 사진을 각 변수에 담음
-        const CAT1 = "./images/cat1.jpg";
-        const CAT2 = "./images/cat2.png";
-        const CAT3 = "./images/cat3.png";
-
-        // 고양이 이미지들을 담을 cats 리스트 생성
-        const cats = [CAT1, CAT2, CAT3];
-
-        // {cats.map(...)} : JS 코드를 사용하기 위해 {}(중괄호)를 사용함.
-        // cats 리스트의 인자들을 map 함수로 순회하며 나열할 것이다.
+        // {favorites.map(...)} : JS 코드를 사용하기 위해 {}(중괄호)를 사용함.
+        // favorites 리스트의 인자들을 map 함수로 순회하며 나열할 것이다.
         // (cat은 첫 번째 인자로 설정한 값이다.)
         // 각 인자들은 순회하며 하나씩 CatItem 컴포넌트에 props로 전달된다.
         // key : 리스트의 인자에 고유한 id 값을 설정해주는 것.
         // 이 key 값을 설정해줘야 리액트에서 이 리스트를 최적화하여 보여줄 수 있음.
         return (
           <ul className="favorites">
-            {cats.map((cat) => (
+            {favorites.map((cat) => (
               <CatItem img={cat} key={cat}/>
             ))}
           </ul>
@@ -104,16 +97,11 @@
 
       // MainCard 컴포넌트
       // ES6+ 디스트럭처링 문법 적용
-      // (App 컴포넌트의) mainCard 값을 props로 받아온다.
+      // App 컴포넌트의 mainCat 값과 handleHeartClick 함수를 props로 받아온다.
       // 마우스 이벤트 : onClick, onMouseOver
       // React에서는 onClick과 같이 c를 대문자로 써주어야 한다.
-      const MainCard = ({img}) => {
-        function handleHeartClick() {
-          console.log("하트 눌렀음❤");
-        }
-        function handleHeartMouseOn() {
-          console.log("하트 스쳐 지나감🖐🏻");
-        }
+      const MainCard = ({img, handleHeartClick}) => {
+
         return (
           <div className="main-card">
             <img
@@ -121,7 +109,7 @@
               alt="고양이"
               width="400"
             /> 
-            <button onClick={handleHeartClick} onMouseOver={handleHeartMouseOn}>🤍</button>
+            <button onClick={handleHeartClick}>🤍</button>
           </div>
         );
       }
@@ -135,16 +123,21 @@
         const CAT3 = "./images/cat3.png"
 
         // useState() : 컴포넌트의 상태 관리를 위해 React Hooks에서 제공되는 함수
-        // useState의 첫 번째 인자(counter)는 설정된 카운터 변수 그 자체이고,
-        // 두 번째 인자(setCounter)는 카운터를 조작하는 함수이다.
+        // useState의 첫 번째 인자(counter)는 설정된 변수(여기선 카운터) 그 자체이고,
+        // 두 번째 인자(setCounter)는 설정된 변수를 조작하는 함수이다.
         // setCounter를 통해 카운터 값을 변경할 수 있다.
-        // useState(1) : 첫 번째 인자에 1을 줌. 즉, 첫 번째 인자의 초기 값으로 1을 줌.
+        // useState(1) : 첫 번째 인자에 1을 줌. 즉, 설정된 변수의 초기 값으로 1을 줌.
         const [counter, setCounter] = React.useState(1);
 
         // 첫 번째 인자 mainCat는 설정된 변수 그 자체이고,
         // 두 번째 인자 setMainCat은 CAT1 변수를 조작하는 함수이다.
-        // useState(CAT1) : 첫 번째 인자로 CAT1을 줌. 즉, 첫 번째 인자의 초기 값으로 CAT1을 설정.
-        const [mainCat, setMainCat] = React.useState(CAT1)
+        // 설정된 변수의 초기 값으로 CAT1을 설정.
+        const [mainCat, setMainCat] = React.useState(CAT1);
+
+        // 첫 번째 인자 favorites는 설정된 변수 그 자체이고,
+        // 두 번째 인자 setFavorites은 설정된 변수를 조작하는 함수이다.
+        // 설정된 변수의 초기 값으로 (리스트로) CAT1, CAT2를 줌
+        const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
 
         // 현재 카운터 콘솔 출력
         console.log("카운터", counter)
@@ -166,15 +159,26 @@
           setMainCat(CAT2)
         }
 
+        function handleHeartClick() {
+          console.log("하트 눌렀음❤");
+
+          // favorites 값에 CAT3 추가하기
+          // 하트를 클릭하면, CAT3 값이 추가된다.(CAT3 고양이가 추가된다.)
+          // [...favorites, CAT3] : ES6+ 스프레드 오퍼레이터 문법. 기존 리스트에 이어서 값을 추가한다.
+          setFavorites([...favorites, CAT3])
+        }
+
         // <Form handleFormSubmit={handleFormSubmit}/> : Form 컴포넌트에 handleFormSubmit 함수를 props로 넘겨준다.
-        // <MainCard img={mainCat}/> : MainCard 컴포넌트에 mainCat 값을 이미지로 전달
+        // <MainCard img={mainCat}/> : MainCard 컴포넌트로 mainCat 값을 이미지로 전달
+        // <MainCard handleHeartClick={handleHeartClick}/> : MainCard 컴포넌트로 handleHeartClick 함수를 Props로 전달
+        // <Favorites favorites={favorites} /> : Favorites 컴포넌트로 favorites 값을 전달
         return (
           <div>
             <Title>{counter}번째 고양이가 말한댱</Title>
             <Title>2번째 고양이가 말한댱</Title>
             <Form handleFormSubmit={handleFormSubmit}/>
-            <MainCard img={mainCat}/>
-            <Favorites />
+            <MainCard img={mainCat} handleHeartClick={handleHeartClick}/>
+            <Favorites favorites={favorites}/>
           </div>
         );
       }
