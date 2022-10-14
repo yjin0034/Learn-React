@@ -49,8 +49,8 @@
 
       // Form 컴포넌트
       // 폼 전송 이벤트 : onSubmit
-      // (App 컴포넌트의) handleFormSubmit 함수를 props로 받아온다
-      const Form = ({handleFormSubmit}) => {
+      // (삭제함) -> (App 컴포넌트의) updateMainCat 함수를 props로 받아온다
+      const Form = ({ updateMainCat }) => {
 
         // 문자가 한글인지 검사하는 함수
         // 한글이면 true, 아니라면 false를 반환함
@@ -63,6 +63,7 @@
         const [value, setValue] = React.useState("");
         
         // 폼에 한글을 입력하면 에러 메시지를 나타내는데 사용하는 상태
+        // 폼에 빈 값을 입력하고 생성 버튼을 눌러 전달하면 에러 메시지를 나타내는데 사용하는 상태
         // 첫 번째 인자 errorMessage는 설정된 변수 그 자체이고,
         // 두 번째 인자 setErrorMessage는 설정된 변수를 조작하는 함수.
         // 설정된 변수의 초기 값으로 ""을 설정. 빈 값.
@@ -83,6 +84,25 @@
             setErrorMessage("");
           }
           setValue(userValue.toUpperCase());
+        }
+
+        // 빈 값을 입력하면 에러 메시지를 나타내는 함수
+        // props로 받아온 updateMainCat() 함수도 불러온다.
+        function handleFormSubmit(event) {
+          // event.preventDefault()
+          // HTML의 기본 동작 : 폼에 전송을 하면, 브라우저가 리프레쉬 된다.
+          // 이를 막기 위해, 폼의 첫 번째 인자로 들어오는 event에 .preventDefault()를
+          // 적용하면 이벤트의 기본 동작을 막을 수 있다. 즉, 폼 전송 후 브라우저가 리프레쉬 되는 걸 막을 수 있다.
+          event.preventDefault();
+          // 해당 함수에 들어오면, errorMessage 변수 값을 빈 값으로 초기화 시킴
+          setErrorMessage("");
+          // 만약, 이벤트 값이 빈 값이라면,
+          if (value === "") {
+            // errorMessage 변수 값을 아래 메시지 값으로 변경
+            setErrorMessage("빈 값으로 만들 수 없습니다.");
+          }
+          // props로 받아온 updateMainCat() 함수도 불러오기. 폼 생성 시 함께 동작되게 하기 위해.
+          updateMainCat();
         }
 
         // value={value} : 폼의 인풋 값을 (상태로 설정한) 변수 value로 지정해 줌
@@ -189,12 +209,8 @@
         // 현재 카운터 콘솔 출력
         console.log("카운터", counter)
 
-        // event.preventDefault()
-        // HTML의 기본 동작 : 폼에 전송을 하면, 브라우저가 리프레쉬 된다.
-        // 이를 막기 위해, 폼의 첫 번째 인자로 들어오는 event에 .preventDefault()를
-        // 적용하면 이벤트의 기본 동작을 막을 수 있다. 즉, 폼 전송 후 브라우저가 리프레쉬 되는 걸 막을 수 있다.
-        function handleFormSubmit(event) {
-          event.preventDefault();
+        // 콘솔에 "폼 전송됨"을 출력하고, 카운터 값에 +1, mainCat의 값을 CAT2로 변경하는 함수
+        function updateMainCat(event) {
           console.log("폼 전송됨");
           // 카운터 값에 +1을 하기
           // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
@@ -206,6 +222,7 @@
           setMainCat(CAT2)
         }
 
+        // 콘솔에 "하트 눌렀음❤"을 출력하는 함수
         function handleHeartClick() {
           console.log("하트 눌렀음❤");
 
@@ -215,7 +232,7 @@
           setFavorites([...favorites, CAT3])
         }
 
-        // <Form handleFormSubmit={handleFormSubmit}/> : Form 컴포넌트에 handleFormSubmit 함수를 props로 넘겨준다.
+        // <Form updateMainCat={updateMainCat}/> : Form 컴포넌트에 updateMainCat 함수를 props로 넘겨준다.
         // <MainCard img={mainCat}/> : MainCard 컴포넌트로 mainCat 값을 이미지로 전달
         // <MainCard handleHeartClick={handleHeartClick}/> : MainCard 컴포넌트로 handleHeartClick 함수를 Props로 전달
         // <Favorites favorites={favorites} /> : Favorites 컴포넌트로 favorites 값을 전달
@@ -223,7 +240,7 @@
           <div>
             <Title>{counter}번째 고양이가 말한댱</Title>
             <Title>2번째 고양이가 말한댱</Title>
-            <Form handleFormSubmit={handleFormSubmit}/>
+            <Form updateMainCat={updateMainCat}/>
             <MainCard img={mainCat} handleHeartClick={handleHeartClick}/>
             <Favorites favorites={favorites}/>
           </div>
