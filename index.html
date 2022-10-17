@@ -193,8 +193,13 @@
         // useState의 첫 번째 인자(counter)는 설정된 변수(여기선 카운터) 그 자체이고,
         // 두 번째 인자(setCounter)는 설정된 변수를 조작하는 함수이다.
         // setCounter를 통해 카운터 값을 변경할 수 있다.
-        // useState(1) : 첫 번째 인자에 1을 줌. 즉, 설정된 변수의 초기 값으로 1을 줌.
-        const [counter, setCounter] = React.useState(1);
+        //
+        // 로컬스토리지에 저장된 값을 화면에 출력하기
+        // localStorage.getItem()를 사용하여 로컬스토리지에 저장된 값을 불러올 수 있다.
+        // useState(Number(localStorage.getItem('counter'))) : 설정된 변수의 초기 값으로 로컬스토리지에서 가져온 값을 지정함.
+        const [counter, setCounter] = React.useState(
+          Number(localStorage.getItem('counter'))
+          );
 
         // 폼을 생성하면(생성 버튼을 클릭했을 때), CAT1 이미지를 CAT2 이미지로 변경하기 위해 사용하는 상태
         // 첫 번째 인자 mainCat는 설정된 변수 그 자체이고,
@@ -208,17 +213,22 @@
         // 설정된 변수의 초기 값으로 (리스트로) CAT1, CAT2를 줌
         const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
 
-
-        // 카운터 값에 +1, mainCat의 값을 CAT2로 변경하는 함수
+        // 카운터 값에 +1 하여 로컬스토리지에 데이터를 싱크하고, mainCat의 값을 CAT2로 변경하는 함수
         function updateMainCat(event) {
           // 카운터 값에 +1을 하기
           // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
           // setCounter 함수를 통해 카운터를 조작함
-          setCounter(counter + 1);
+          const nextCounter = counter + 1
+          setCounter(nextCounter);
+
+          // 로컬스토리지에 데이터 싱크하기
+          // localStorage.setItem()를 사용하여 값을 로컬스토리지에 저장할 수 있다.
+          localStorage.setItem('counter', nextCounter);
+
           // mainCat의 값을 CAT2로 변경하기
           // 폼을 생성하면, CAT2 값으로 변경된다. 
           // (즉 결국, 해당 값은 MainCard 컴포넌트에 전달되어, CAT2 변수에 저장된 고양이 이미지로 이미지가 변경된다.)
-          setMainCat(CAT2)
+          setMainCat(CAT2);
         }
 
         // favorites 값에 CAT3 값을 추가하는 함수
