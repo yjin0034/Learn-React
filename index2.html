@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>고양이가 말한댱</title>
+  </head>
+  <style>
+    body {
+      text-align: center;
+    }
+    .main-card button {
+      position: relative;
+      left: -45px;
+      bottom: 15px;
+    }
+    .favorites {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+  </style>
+  <body>
+    <div id="app"></div>
+    <!-- React 추가 -->
+    <script
+      src="https://unpkg.com/react@17/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <!-- Babel 추가 -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel">
+
+      const jsonLocalStorage = {
+        setItem: (key, value) => {
+          localStorage.setItem(key, JSON.stringify(value));
+        },
+        getItem: (key) => {
+          return JSON.parse(localStorage.getItem(key));
+        },
+      };
+
+
+      // Title 컴포넌트
+      // App 컴포넌트로부터 props를 받아온다.
+      const Title = (props) => {
+        return (
+          <h1>{props.children}</h1>
+        );
+      }
+
+      // Form 컴포넌트
+      // 폼 전송 이벤트 : onSubmit
+      // (삭제함) -> (App 컴포넌트의) updateMainCat 함수를 props로 받아온다
+      const Form = ({ updateMainCat }) => {
+
+        // 문자가 한글인지 검사하는 함수
+        // 한글이면 true, 아니라면 false를 반환함
+        const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
+
+        // 폼에 글자를 입력하면 대문자로 입력되게 하는데 사용하는 상태
+        // 첫 번째 인자 value는 설정된 변수 그 자체이고,
+        // 두 번째 인자 setValue는 설정된 변수를 조작하는 함수이다.
+        // 설정된 변수의 초기 값으로 ""을 설정. 빈 값.
+        const [value, setValue] = React.useState("");
+        
+        // 폼에 한글을 입력하면 에러 메시지를 나타내는데 사용하는 상태
+        // 폼에 빈 값을 입력하고 생성 버튼을 눌러 전달하면 에러 메시지를 나타내는데 사용하는 상태
+        // 첫 번째 인자 errorMessage는 설정된 변수 그 자체이고,
+        // 두 번째 인자 setErrorMessage는 설정된 변수를 조작하는 함수.
+        // 설정된 변수의 초기 값으로 ""을 설정. 빈 값.
+        const [errorMessage, setErrorMessage] = React.useState("");
+
+        // 한글을 입력하면 에러 메시지를 나타내는 함수
+        // 이벤트의 값을 대문자로 변경하는 함수
+        // setValue를 통해 설정된 변수 value의 값을 조작한다.
+        function handleInputChange(event) {
+          // 이벤트로 받아온 값을 userValue 변수에 담음
+          const userValue = event.target.value;
+          // 해당 이벤트 값이 한글이라면,
+          if (includesHangul(userValue)) {
+            // errorMessage 변수 값을 "한글은 입력할 수 없습니다." 로 변경
+            // setErrorMessage 함수를 사용해 내용 변경
+            setErrorMessage("한글은 입력할 수 없습니다.");
+          } else { // 그렇지 않다면, 빈 값으로 변경.
+            setErrorMessage("");
+          }
+          setValue(userValue.toUpperCase());
+        }
+
+        // 빈 값을 입력하면 에러 메시지를 나타내는 함수
+        // props로 받아온 updateMainCat() 함수도 불러온다.
+        function handleFormSubmit(event) {
+          // event.preventDefault()
+          // HTML의 기본 동작 : 폼에 전송을 하면, 브라우저가 리프레쉬 된다.
+          // 이를 막기 위해, 폼의 첫 번째 인자로 들어오는 event에 .preventDefault()를
+          // 적용하면 이벤트의 기본 동작을 막을 수 있다. 즉, 폼 전송 후 브라우저가 리프레쉬 되는 걸 막을 수 있다.
+          event.preventDefault();
+          // 해당 함수에 들어오면, errorMessage 변수 값을 빈 값으로 초기화 시킴
+          setErrorMessage("");
+          // 만약, 이벤트 값이 빈 값이라면,
+          if (value === "") {
+            // errorMessage 변수 값을 아래 메시지 값으로 변경
+            setErrorMessage("빈 값으로 만들 수 없습니다.");
+            // 빈 값이면, updateMainCat 함수를 불러오지 않도록 함
+            return;
+          }
+          // props로 받아온 updateMainCat() 함수도 불러오기. 폼 생성 시 함께 동작되게 하기 위해.
+          updateMainCat();
+        }
+
+        // value={value} : 폼의 인풋 값을 (상태로 설정한) 변수 value로 지정해 줌
+        // value : 폼의 인풋 값(입력되는 값)을 지정할 수 있음
+        // onChange={handleInputChange} : 해당 폼에 값을 입력할 때마다 handleInputChange 함수가 불러와지도록 함
+        // onChange : 인풋의 값이 Change 될 때마다 지정한 값을 불러오는 이벤트 핸들러
+        // 최종적인 과정을 정리하면, 폼에 값을 입력하면 해당 값이 대문자로 바뀌어 폼에 입력되게 된다.
+        // 상세히 풀이하면, 폼에 값을 입력하면, onChange에 의해 handleInputChange 함수가 불러와지고 해당 함수에서는 폼 입력값을 대문자로 바꾸는 동작을 하게되고,
+        // 이렇게 변경된 값은 value에 의해 폼의 인풋 값으로 적용되어 결국, 폼의 인풋 값에는 사용자가 입력한 값이 대문자로 바뀌어 나타나게 되는 것이다.
+        // <p style={{ color: "red" }}>{errorMessage}</p> : errorMessage 변수의 값(여기선, 에러메시지)을 p태그 안에 담에 반환
+        return (
+          <form onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="영어 대사를 입력해주세요"
+              value={value}
+              onChange={handleInputChange}
+            />
+            <button type="submit">생성</button>
+            <p style={{ color: "red" }}>{errorMessage}</p>
+          </form>
+        );
+      }
+
+      // CatItem 컴포넌트
+      // 컴포넌트 이름은 대문자로 시작
+      // <img style={{ width: "150px", border: "1px solid blue" }} : 인라인 스타일링
+      // App 컴포넌트로부터 props를 받아온다.
+      function CatItem(props) {
+        return (
+          <li>
+            <img src={props.img} style={{ width: "150px", border: "1px solid blue" }} />
+          </li>
+        );
+      }
+
+      // Favorites 컴포넌트
+      // App 컴포넌트의 favorites 값을 props로 받아온다.
+      function Favorites({favorites}) {
+
+        // {favorites.map(...)} : JS 코드를 사용하기 위해 {}(중괄호)를 사용함.
+        // favorites 리스트의 인자들을 map 함수로 순회하며 나열할 것이다.
+        // (cat은 첫 번째 인자로 설정한 값이다.)
+        // 각 인자들은 순회하며 하나씩 CatItem 컴포넌트에 props로 전달된다.
+        // key : 리스트의 인자에 고유한 id 값을 설정해주는 것.
+        // 이 key 값을 설정해줘야 리액트에서 이 리스트를 최적화하여 보여줄 수 있음.
+        return (
+          <ul className="favorites">
+            {favorites.map((cat) => (
+              <CatItem img={cat} key={cat}/>
+            ))}
+          </ul>
+        );
+      }
+
+      // MainCard 컴포넌트
+      // ES6+ 디스트럭처링 문법 적용
+      // App 컴포넌트의 mainCat 값(props 이름은 img)과 handleHeartClick 함수를 props로 받아온다(props 이름은 onHeartClick).
+      // 마우스 이벤트 : onClick, onMouseOver
+      // React에서는 onClick과 같이 c를 대문자로 써주어야 한다.
+      const MainCard = ({img, onHeartClick}) => {
+
+        return (
+          <div className="main-card">
+            <img
+              src={img}
+              alt="고양이"
+              width="400"
+            /> 
+            <button onClick={onHeartClick}>🤍</button>
+          </div>
+        );
+      }
+
+      // App 컴포넌트
+      const App = () => {
+
+        // 고양이 이미지 사진을 각 변수에 담음
+        const CAT1 = "./images/cat1.jpg";
+        const CAT2 = "./images/cat2.png";
+        const CAT3 = "./images/cat3.png";
+
+        // 폼을 생성하면(생성 버튼을 클릭했을 때), 카운터 값을 1 증가시키기 위해 사용하는 상태
+        // useState() : 컴포넌트의 상태 관리를 위해 React Hooks에서 제공되는 함수
+        // useState의 첫 번째 인자(counter)는 설정된 변수(여기선 카운터) 그 자체이고,
+        // 두 번째 인자(setCounter)는 설정된 변수를 조작하는 함수이다.
+        // setCounter를 통해 카운터 값을 변경할 수 있다.
+        //
+        // 로컬스토리지에 저장된 값을 화면에 출력하기
+        // localStorage.getItem()를 사용하여 로컬스토리지에 저장된 값을 불러올 수 있다.
+        // useState(Number(localStorage.getItem('counter'))) : 설정된 변수(counater)의 초기 값으로 로컬스토리지에서 가져온 값을 지정함.
+        // 로컬스토리지에서 counter Key 값에 해당하는 Value 값을 가져옴
+        const [counter, setCounter] = React.useState(
+          jsonLocalStorage.getItem('counter')
+        );
+
+        // 폼을 생성하면(생성 버튼을 클릭했을 때), CAT1 이미지를 CAT2 이미지로 변경하기 위해 사용하는 상태
+        // 첫 번째 인자 mainCat는 설정된 변수 그 자체이고,
+        // 두 번째 인자 setMainCat은 CAT1 변수를 조작하는 함수이다.
+        // 설정된 변수의 초기 값으로 CAT1을 설정.
+        const [mainCat, setMainCat] = React.useState(CAT1);
+
+        // 하트 버튼을 클릭하면, CAT3 이미자가 추가되게 하는데 사용하는 상태
+        // 첫 번째 인자 favorites는 설정된 변수 그 자체이고,
+        // 두 번째 인자 setFavorites은 설정된 변수를 조작하는 함수이다.
+        //
+        // 로컬스토리지에 저장된 값을 화면에 출력하기
+        // localStorage.getItem()를 사용하여 로컬스토리지에 저장된 값을 불러올 수 있다.
+        // useState(Number(localStorage.getItem('favorites'))) : 설정된 변수(favorites)의 초기 값으로 로컬스토리지에서 가져온 값을 지정함.
+        // 로컬스토리지에서 favorites Key 값에 해당하는 Value 값을 가져옴
+        // Number(localStorage.getItem('favorites')) || [] : 만약, favorites Key 값이 없다면, null 값([])을 가져오겠다.
+        const [favorites, setFavorites] = React.useState(
+          Number(jsonLocalStorage.getItem('favorites')) || []
+        );
+
+        // 카운터 값에 +1 하여 로컬스토리지에 데이터를 싱크하고, mainCat의 값을 CAT2로 변경하는 함수
+        function updateMainCat() {
+          // mainCat의 값을 CAT2로 변경하기
+          // 폼을 생성하면, CAT2 값으로 변경된다. 
+          setMainCat(CAT2);
+
+          // 카운터 값에 +1을 하기
+          // 즉, 폼을 생성하면, 카운터 +1이 이루어진다.
+          // setCounter 함수를 통해 카운터를 조작함
+          const nextCounter = counter + 1;
+          setCounter(nextCounter);
+
+          // 로컬스토리지에 데이터 싱크하기
+          // localStorage.setItem()를 사용하여 값을 로컬스토리지에 저장할 수 있다.
+          // 로컬스토리지에 Key 값으로 counter, Value 값으로 nextCounter의 값을 저장
+          jsonLocalStorage.setItem('counter', nextCounter);
+        }
+
+        // favorites 값에 mainCat 값을 추가하여 로컬스토리지에 데이터를 싱크하는 함수
+        function handleHeartClick() {
+          // favorites 값에 mainCat 값 추가하기
+          // 하트를 클릭하면, mainCat 값이 추가된다.(mainCat 변수에 저장된 고양이 이미지가 추가된다.)
+          // [...favorites, CAT3] : ES6+ 스프레드 오퍼레이터 문법. 기존 리스트에 이어서 값을 추가한다.
+          const nextFavorites = [...favorites, mainCat];
+          setFavorites(nextFavorites);
+
+          // 로컬스토리지에 데이터 싱크하기
+          // localStorage.setItem()를 사용하여 값을 로컬스토리지에 저장할 수 있다.
+          // 로컬스토리지에 Key 값으로 favorites, Value 값으로 nextFavorites의 값을 저장
+          jsonLocalStorage.setItem('favorites', nextFavorites);
+        }
+
+        // <Form updateMainCat={updateMainCat}/> : Form 컴포넌트에 updateMainCat 함수를 props로 넘겨준다.
+        // <MainCard img={mainCat}/> : MainCard 컴포넌트로 mainCat 값을 전달. props 이름은 img로 전달
+        // <MainCard onHeartClick={handleHeartClick}/> : MainCard 컴포넌트로 handleHeartClick 함수를 Props로 전달. props 이름은 onHeartClick으로 전달
+        // <Favorites favorites={favorites} /> : Favorites 컴포넌트로 favorites 값을 전달
+        return (
+          <div>
+            <Title>{counter}번째 고양이가 말한댱</Title>
+            <Title>2번째 고양이가 말한댱</Title>
+            <Form updateMainCat={updateMainCat}/>
+            <MainCard img={mainCat} onHeartClick={handleHeartClick}/>
+            <Favorites favorites={favorites}/>
+          </div>
+        );
+      }
+
+      const 여기다가그려 = document.querySelector("#app");
+
+      ReactDOM.render(<App />, 여기다가그려);
+    </script>
+  </body>
+</html>
